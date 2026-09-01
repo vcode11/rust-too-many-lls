@@ -39,6 +39,16 @@ impl List {
     }
 }
 
+// A non recurisve drop Impl
+impl Drop for List {
+    fn drop(&mut self) {
+        let mut curr_link = mem::replace(&mut self.head, Link::Empty);
+        while let Link::More(mut boxed_node) = curr_link {
+            curr_link = mem::replace(&mut boxed_node.next, Link::Empty)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     
