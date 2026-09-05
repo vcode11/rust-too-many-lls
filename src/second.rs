@@ -24,14 +24,10 @@ impl List {
     }
 
     pub fn pop(&mut self) -> Option<i32> {
-        match self.head.take() {
-            None => None,
-            Some(node) => {
-                let pop_item = node.elem;
-                self.head = node.next;
-                Some(pop_item)
-            }
-        }
+        self.head.take().map(|node| {
+            self.head = node.next;
+            node.elem
+        })
     }
 }
 
