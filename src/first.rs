@@ -6,29 +6,35 @@ struct Node {
 }
 
 enum Link {
-    Empty, 
-    More(Box<Node>)
+    Empty,
+    More(Box<Node>),
 }
 
 pub struct List {
-    head: Link
+    head: Link,
+}
+
+impl Default for List {
+    fn default() -> Self {
+        List { head: Link::Empty }
+    }
 }
 
 impl List {
     pub fn new() -> Self {
-        List{head: Link::Empty}
+        List::default()
     }
 
-    pub fn push(&mut self, elem: i32){
+    pub fn push(&mut self, elem: i32) {
         let new_node = Node {
-            elem: elem,
-            next: mem::replace(&mut self.head, Link::Empty)
+            elem,
+            next: mem::replace(&mut self.head, Link::Empty),
         };
         self.head = Link::More(Box::new(new_node))
     }
 
     pub fn pop(&mut self) -> Option<i32> {
-        match mem::replace(&mut self.head,  Link::Empty) {
+        match mem::replace(&mut self.head, Link::Empty) {
             Link::Empty => None,
             Link::More(node) => {
                 let pop_item = node.elem;
@@ -51,7 +57,7 @@ impl Drop for List {
 
 #[cfg(test)]
 mod tests {
-    
+
     use super::*;
 
     #[test]
