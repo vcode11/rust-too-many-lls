@@ -15,6 +15,14 @@ impl<T: Default> List<T> {
         List::default()
     }
 
+    pub fn peek(&self) -> Option<&T> {
+        self.head.as_ref().map(|boxed_node| &boxed_node.elem)
+    }
+
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        self.head.as_mut().map(|boxed_node| &mut boxed_node.elem)
+    }
+
     pub fn push(&mut self, elem: T) {
         let new_node = Node {
             elem,
@@ -41,7 +49,35 @@ mod tests {
         let mut list = List::new();
         list.push(1);
         list.push(2);
-        assert_eq!(list.pop(), Some(2));
+    }
+
+    #[test]
+    fn test_pop() {
+        let mut list = List::new();
+        list.push(1);
         assert_eq!(list.pop(), Some(1));
+        assert_eq!(list.pop(), None);
+    }
+
+    #[test]
+    fn peek() {
+        let mut list = List::new();
+        list.push(1);
+        assert_eq!(list.peek(), Some(&1));
+
+        list.push(2);
+        assert_eq!(list.peek(), Some(&2));
+        assert_eq!(list.pop(), Some(2));
+    }
+
+    #[test]
+    fn peek_mut() {
+        let mut list = List::new();
+        list.push(1);
+        assert_eq!(list.peek_mut(), Some(&mut 1));
+        if let Some(node) = list.peek_mut() {
+            *node = 10;
+        }
+        assert_eq!(list.peek(), Some(&10));
     }
 }
