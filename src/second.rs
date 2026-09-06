@@ -39,6 +39,22 @@ impl<T: Default> List<T> {
     }
 }
 
+pub struct IntoIter<T: Default>(List<T>);
+
+impl<T: Default> List<T> {
+    pub fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
+    }
+}
+
+impl<T: Default> Iterator for IntoIter<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.pop()
+    }
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -79,5 +95,17 @@ mod tests {
             *node = 10;
         }
         assert_eq!(list.peek(), Some(&10));
+    }
+
+    #[test]
+    fn into_iter() {
+        let mut list = List::new();
+        list.push(1);
+        list.push(2);
+        list.push(3);
+        let mut list_iter = list.into_iter();
+        assert_eq!(list_iter.next(), Some(3));
+        assert_eq!(list_iter.next(), Some(2));
+        assert_eq!(list_iter.next(), Some(1));
     }
 }
